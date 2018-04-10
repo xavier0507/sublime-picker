@@ -69,6 +69,8 @@ class DayPickerPagerAdapter extends PagerAdapter {
     private int mCount;
     private int mFirstDayOfWeek;
 
+    private boolean mShouldCancelStartedDateHighLight;
+
     // used in resolving start/end dates during range selection
     private final SelectedDate mTempSelectedDay = new SelectedDate(Calendar.getInstance());
 
@@ -297,6 +299,7 @@ class DayPickerPagerAdapter extends PagerAdapter {
         v.setMonthTextAppearance(mMonthTextAppearance);
         v.setDayOfWeekTextAppearance(mDayOfWeekTextAppearance);
         v.setDayTextAppearance(mDayTextAppearance);
+        v.setShouldCancelStartedDateHighLight(mShouldCancelStartedDateHighLight);
 
         if (mDaySelectorColor != null) {
             v.setDaySelectorColor(mDaySelectorColor);
@@ -375,6 +378,7 @@ class DayPickerPagerAdapter extends PagerAdapter {
         public void onDayClick(SimpleMonthView view, Calendar day) {
             if (day != null) {
                 if (mDaySelectionEventListener != null) {
+                    view.setShouldCancelStartedDateHighLight(false);
                     mDaySelectionEventListener.onDaySelected(DayPickerPagerAdapter.this, day);
                 }
             }
@@ -425,6 +429,14 @@ class DayPickerPagerAdapter extends PagerAdapter {
         }
 
         return null;
+    }
+
+    public void setShouldCancelStartedDateHighLight(boolean shouldCancelStartedDateHighLight) {
+        mShouldCancelStartedDateHighLight = shouldCancelStartedDateHighLight;
+    }
+
+    public boolean getShouldCancelStartedDateHighLight() {
+        return mShouldCancelStartedDateHighLight;
     }
 
     private int[] resolveSelectedDayBasedOnType(int month, int year) {

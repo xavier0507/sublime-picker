@@ -123,6 +123,8 @@ class SimpleMonthView extends View {
     private int mPaddedWidth;
     private int mPaddedHeight;
 
+    private boolean mShouldCancelStartedDateHighLight;
+
     /**
      * The day of month for the selected day, or -1 if no day is selected.
      */
@@ -386,6 +388,10 @@ class SimpleMonthView extends View {
         mOnDayClickListener = listener;
     }
 
+    public void setShouldCancelStartedDateHighLight(boolean shouldCancelStartedDateHighLight) {
+        mShouldCancelStartedDateHighLight = shouldCancelStartedDateHighLight;
+    }
+
     @Override
     public boolean dispatchHoverEvent(MotionEvent event) {
         // First right-of-refusal goes the touch exploration helper.
@@ -406,6 +412,13 @@ class SimpleMonthView extends View {
         public void run() {
             mTouchedItem = getDayAtLocation(mDownX, mDownY);
             invalidate();
+
+            postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    setShouldCancelStartedDateHighLight(false);
+                }
+            }, ViewConfiguration.getTapTimeout());
         }
     }
 
@@ -558,8 +571,10 @@ class SimpleMonthView extends View {
             final boolean isSelected = mActivatedDays.isSelected(day);
 
             if (isSelected) {
-                stateMask |= SUtils.STATE_ACTIVATED;
-                canvas.drawCircle(colCenterRtl, rowCenter, mDaySelectorRadius, mDaySelectorPaint);
+                if (!mShouldCancelStartedDateHighLight) {
+                    stateMask |= SUtils.STATE_ACTIVATED;
+                    canvas.drawCircle(colCenterRtl, rowCenter, mDaySelectorRadius, mDaySelectorPaint);
+                }
             } else if (isDayInActivatedRange) {
                 stateMask |= SUtils.STATE_ACTIVATED;
 
@@ -585,13 +600,13 @@ class SimpleMonthView extends View {
 
                 switch (bgShape) {
                     case DRAW_RECT_WITH_CURVE_ON_LEFT:
-                        int leftRectArcLeft = (int)(colCenterRtl - horDistFromCenter) % 2 == 1 ?
-                                (int)(colCenterRtl - horDistFromCenter) + 1
-                                : (int)(colCenterRtl - horDistFromCenter);
+                        int leftRectArcLeft = (int) (colCenterRtl - horDistFromCenter) % 2 == 1 ?
+                                (int) (colCenterRtl - horDistFromCenter) + 1
+                                : (int) (colCenterRtl - horDistFromCenter);
 
-                        int leftRectArcRight = (int)(colCenterRtl + horDistFromCenter) % 2 == 1 ?
-                                (int)(colCenterRtl + horDistFromCenter) + 1
-                                : (int)(colCenterRtl + horDistFromCenter);
+                        int leftRectArcRight = (int) (colCenterRtl + horDistFromCenter) % 2 == 1 ?
+                                (int) (colCenterRtl + horDistFromCenter) + 1
+                                : (int) (colCenterRtl + horDistFromCenter);
 
                         RectF leftArcRect = new RectF(leftRectArcLeft,
                                 rowCenter - rowHeight / 2f + mPaddingRangeIndicator,
@@ -607,13 +622,13 @@ class SimpleMonthView extends View {
                                 mDayRangeSelectorPaint);
                         break;
                     case DRAW_RECT_WITH_CURVE_ON_RIGHT:
-                        int rightRectArcLeft = (int)(colCenterRtl - horDistFromCenter) % 2 == 1 ?
-                                (int)(colCenterRtl - horDistFromCenter) + 1
-                                : (int)(colCenterRtl - horDistFromCenter);
+                        int rightRectArcLeft = (int) (colCenterRtl - horDistFromCenter) % 2 == 1 ?
+                                (int) (colCenterRtl - horDistFromCenter) + 1
+                                : (int) (colCenterRtl - horDistFromCenter);
 
-                        int rightRectArcRight = (int)(colCenterRtl + horDistFromCenter) % 2 == 1 ?
-                                (int)(colCenterRtl + horDistFromCenter) + 1
-                                : (int)(colCenterRtl + horDistFromCenter);
+                        int rightRectArcRight = (int) (colCenterRtl + horDistFromCenter) % 2 == 1 ?
+                                (int) (colCenterRtl + horDistFromCenter) + 1
+                                : (int) (colCenterRtl + horDistFromCenter);
 
                         RectF rightArcRect = new RectF(rightRectArcLeft,
                                 rowCenter - rowHeight / 2f + mPaddingRangeIndicator,
@@ -653,8 +668,12 @@ class SimpleMonthView extends View {
             if (isDayToday && !isDayInActivatedRange) {
                 dayTextColor = mDaySelectorPaint.getColor();
             } else {
-                final int[] stateSet = SUtils.resolveStateSet(stateMask);
-                dayTextColor = mDayTextColor.getColorForState(stateSet, 0);
+                if (mShouldCancelStartedDateHighLight && isDayToday) {
+                    dayTextColor = mDaySelectorPaint.getColor();
+                } else {
+                    final int[] stateSet = SUtils.resolveStateSet(stateMask);
+                    dayTextColor = mDayTextColor.getColorForState(stateSet, 0);
+                }
             }
             p.setColor(dayTextColor);
 

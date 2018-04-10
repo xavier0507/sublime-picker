@@ -80,6 +80,7 @@
         <item name="spDateTextAppearance">@style/SPDayTextAppearance</item>
         <item name="spDaySelectorColor">?attr/colorControlActivated</item>
         <item name="spDayHighlightColor">?attr/colorControlHighlight</item>
+        <item name="shouldCancelStartedDateHighLight">true</item>
     </style>
 
     <!-- SimpleMonthView -->
