@@ -249,6 +249,7 @@
         <attr name="spDaySelectorColor" format="color" />
         <!-- @hide The background color used for the day highlight indicator. -->
         <attr name="spDayHighlightColor" format="color" />
+        <attr name="shouldDisableDefaultDateHighlight" format="boolean"/>
     </declare-styleable>
 
     <declare-styleable name="RadialTimePickerView">
