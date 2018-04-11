@@ -123,7 +123,7 @@ class SimpleMonthView extends View {
     private int mPaddedWidth;
     private int mPaddedHeight;
 
-    private boolean mShouldCancelStartedDateHighLight;
+    private boolean shouldDisableDefaultDateHighlight;
 
     /**
      * The day of month for the selected day, or -1 if no day is selected.
@@ -388,8 +388,8 @@ class SimpleMonthView extends View {
         mOnDayClickListener = listener;
     }
 
-    public void setShouldCancelStartedDateHighLight(boolean shouldCancelStartedDateHighLight) {
-        mShouldCancelStartedDateHighLight = shouldCancelStartedDateHighLight;
+    public void setShouldDisableDefaultDateHighlight(boolean shouldDisableDefaultDateHighlight) {
+        this.shouldDisableDefaultDateHighlight = shouldDisableDefaultDateHighlight;
     }
 
     @Override
@@ -416,7 +416,7 @@ class SimpleMonthView extends View {
             postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    setShouldCancelStartedDateHighLight(false);
+                    setShouldDisableDefaultDateHighlight(false);
                 }
             }, ViewConfiguration.getTapTimeout());
         }
@@ -571,7 +571,7 @@ class SimpleMonthView extends View {
             final boolean isSelected = mActivatedDays.isSelected(day);
 
             if (isSelected) {
-                if (!mShouldCancelStartedDateHighLight) {
+                if (!shouldDisableDefaultDateHighlight) {
                     stateMask |= SUtils.STATE_ACTIVATED;
                     canvas.drawCircle(colCenterRtl, rowCenter, mDaySelectorRadius, mDaySelectorPaint);
                 }
@@ -668,7 +668,7 @@ class SimpleMonthView extends View {
             if (isDayToday && !isDayInActivatedRange) {
                 dayTextColor = mDaySelectorPaint.getColor();
             } else {
-                if (mShouldCancelStartedDateHighLight && isDayToday) {
+                if (shouldDisableDefaultDateHighlight && isDayToday) {
                     dayTextColor = mDaySelectorPaint.getColor();
                 } else {
                     final int[] stateSet = SUtils.resolveStateSet(stateMask);
