@@ -99,8 +99,8 @@ class DayPickerView extends ViewGroup {
         final ColorStateList daySelectorColor = a.getColorStateList(
                 R.styleable.DayPickerView_spDaySelectorColor);
 
-        final boolean shouldCancelStartedDateHighLight = a.getBoolean(
-                R.styleable.DayPickerView_shouldCancelStartedDateHighLight, false);
+        final boolean shouldDisableDefaultDateHighlight = a.getBoolean(
+                R.styleable.DayPickerView_shouldDisableDefaultDateHighlight, false);
 
         a.recycle();
 
@@ -117,7 +117,7 @@ class DayPickerView extends ViewGroup {
         mAdapter.setDayOfWeekTextAppearance(dayOfWeekTextAppearanceResId);
         mAdapter.setDayTextAppearance(dayTextAppearanceResId);
         mAdapter.setDaySelectorColor(daySelectorColor);
-        mAdapter.setShouldCancelStartedDateHighLight(shouldCancelStartedDateHighLight);
+        mAdapter.setShouldCancelStartedDateHighLight(shouldDisableDefaultDateHighlight);
 
         final LayoutInflater inflater = LayoutInflater.from(context);
 
